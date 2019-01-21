@@ -3,6 +3,9 @@ from keras.layers import Input, Dense
 from keras.models import Model, Sequential
 from keras.datasets import mnist
 import matplotlib.pyplot as plt
+'''
+reference from https://blog.keras.io/building-autoencoders-in-keras.html
+'''
 
 # load data
 (X_train, _), (X_test, _) = mnist.load_data()
@@ -10,7 +13,7 @@ import matplotlib.pyplot as plt
 # get the input size
 input_size = X_train.shape[1] * X_train.shape[2]
 
-# normalize the data
+# normalize the data ranged from 0 to 1
 X_train = X_train.astype('float32') / 255
 X_test = X_test.astype('float32') / 255
 # flatten data to vectors. the training dataset becomes a 60000x784 matrix and the test dataset becomes 10000x784
@@ -51,6 +54,12 @@ autoencoder.fit(X_train, X_train, epochs=50, batch_size=256,
 
 encoded_images = encoder.predict(X_test)
 decoded_images = decoder.predict(encoded_images)
+
+'''
+# The same as using the decoder
+decoded_images_autoencoder = autoencoder.predict(X_test)
+print(np.array_equal(decoded_images, decoded_images_autoencoder))
+'''
 # display images
 n = 10
 plt.figure(figsize=(20, 4))
@@ -59,12 +68,14 @@ for i in range(n):
     ax = plt.subplot(3, n, i + 1)
     plt.imshow(X_test[i].reshape(28, 28))
     plt.gray()
+    plt.title('original')
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
-    # display encoded
+    # display code representation
     ax = plt.subplot(3, n, i + 1 + n)
     plt.imshow(encoded_images[i].reshape(8, 8))
+    plt.title('compressed')
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -73,6 +84,7 @@ for i in range(n):
     ax = plt.subplot(3, n, i + 1 + 2*n)
     plt.imshow(decoded_images[i].reshape(28, 28))
     plt.gray()
+    plt.title('decoded')
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 plt.show()
