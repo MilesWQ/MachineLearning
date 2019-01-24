@@ -46,11 +46,15 @@ decoder_layer = autoencoder.layers[-1]
 decoder = Model(encoded_input, decoder_layer(encoded_input))
 
 # compile the autoencoder model
-autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+# SGD doesn't work
+#autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 
 # train, use the same input as y, epochs =50
 autoencoder.fit(X_train, X_train, epochs=50, batch_size=256,
                 validation_data=(X_test, X_test))
+
+autoencoder.save('autoencoder_batch_size512.h5')
 
 encoded_images = encoder.predict(X_test)
 decoded_images = decoder.predict(encoded_images)
@@ -61,7 +65,7 @@ decoded_images_autoencoder = autoencoder.predict(X_test)
 print(np.array_equal(decoded_images, decoded_images_autoencoder))
 '''
 # display images
-n = 10
+n = 15
 plt.figure(figsize=(20, 4))
 for i in range(n):
     # display original

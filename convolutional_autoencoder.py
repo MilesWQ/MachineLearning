@@ -54,7 +54,7 @@ autoencoder = Model(inputs, decoded)
 
 # print a model summary
 autoencoder.summary()
-
+'''
 # compile the model
 autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 # training
@@ -85,3 +85,4 @@ for i in range(n):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 plt.show()
+'''
