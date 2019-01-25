@@ -1,6 +1,5 @@
-from util import load_all_cifar, showimages, time_elapse
+from util import load_all_cifar, showimages, time_elapse, plt
 from k_nearest_neighbor import KNearestNeighbor
-import matplotlib.pyplot as plt
 import numpy as np
 
 root = 'cifar-10-batches-py'
