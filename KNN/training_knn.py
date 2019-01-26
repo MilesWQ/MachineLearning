@@ -2,7 +2,7 @@ from util import load_all_cifar, showimages, time_elapse, plt
 from k_nearest_neighbor import KNearestNeighbor
 import numpy as np
 
-root = 'cifar-10-batches-py'
+cifar_dir = '../cifar-10-batches-py'
 # load data
 X_train, y_train, X_test, y_test = load_all_cifar(root)
 
