@@ -53,9 +53,9 @@ plt.show()
 """
 
 # tunning hyperparameters
-learning_rates = [1e-7, 3e-7, 1e-6, 3e-6, 1e-5, 3e-5,
-                  1e-4, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2, 1e-1, 3e-1]
-regularization_strengths = [1, 3, 1e1, 3e1, 1e2, 3e2, 1e3, 3e3]
+learning_rates = [1e-6, 3e-6, 6e-6, 1e-5, 3e-5, 6e-5,
+                  1e-4, 3e-4, 6e-4, 1e-3]
+regularization_strengths = [0.001, 0.003, 0.1, 0.3, 0.6]
 
 # results is dictionary mapping tuples of the form
 # (learning_rate, regularization_strength) to tuples of the form
@@ -74,7 +74,7 @@ for lr in learning_rates:
         svm = LinearSVM()
         # train with training set
         svm.train(X_train, y_train, learning_rate=lr,
-                  reg=reg, num_iters=200)
+                  reg=reg, num_iters=500)
         # get training set accuracy
         y_train_pred = svm.predict(X_train)
         training_accuracy = np.mean(y_train_pred == y_train)
@@ -88,12 +88,12 @@ for lr in learning_rates:
         if validation_accuracy > best_val:
             best_val = validation_accuracy
             best_svm = svm
-
+"""
 for lr, reg in sorted(results):
     train_accuracy, val_accuracy = results[(lr, reg)]
     print('lr %e reg %e train accuracy: %f val accuracy: %f' % (
         lr, reg, train_accuracy, val_accuracy))
-
+"""
 print('best validation accuracy achieved during cross-validation: %f' % best_val)
 
 # Visualize the cross-validation results
@@ -119,3 +119,27 @@ plt.xlabel('log learning rate')
 plt.ylabel('log regularization strength')
 plt.title('CIFAR-10 validation accuracy')
 plt.show()
+
+"""
+# Evaluate the best svm on test set
+y_test_pred = best_svm.predict(X_test)
+test_accuracy = np.mean(y_test == y_test_pred)
+print('linear SVM on raw pixels final test set accuracy: %f' % test_accuracy)
+
+# Visualize the learned weights for each class.
+# Depending on your choice of learning rate and regularization strength, these may
+# or may not be nice to look at.
+# strip out the bias
+w = best_svm.W[:-1, :]
+w = w.reshape(32, 32, 3, 10)
+w_min, w_max = np.min(w), np.max(w)
+classes = ['plane', 'car', 'bird', 'cat', 'deer',
+           'dog', 'frog', 'horse', 'ship', 'truck']
+for i in range(10):
+    plt.subplot(2, 5, i + 1)
+    # Rescale the weights to be between 0 and 255
+    wimg = 255.0 * (w[:, :, :, i].squeeze() - w_min) / (w_max - w_min)
+    plt.imshow(wimg.astype('uint8'))
+    plt.axis('off')
+    plt.title(classes[i])
+"""

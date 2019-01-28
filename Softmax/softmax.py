@@ -66,18 +66,28 @@ def softmax_loss_vectorized(W, X, y, reg):
     # here, it is easy to run into numeric instability. Don't forget the        #
     # regularization!                                                           #
     #############################################################################
+    # scores shape = [NxD].[DxC] = [NXC]
     scores = X.dot(W)
     c = np.max(scores, axis=1)
     # apply numeric stability
     scores -= c[np.arange(num_X), np.newaxis]
+    # exps shape = [NxC]
     exps = np.exp(scores)
     # normalize
     exp_sum = np.sum(exps, axis=1, keepdims=True)
+    # shape [NXC]
     exps /= exp_sum
     # get the correct class exps
     correct_classes = exps[np.arange(num_X), y]
     # regularized mean loss
     loss = np.sum(-np.log(correct_classes)) / num_X + 0.5 * reg * np.sum(W*W)
+
+    # compute gradient
+    correct_classes_mask = np.zeros(exps.shape)
+    correct_classes_mask[np.arange(num_X), y] = 1
+    # NXC with the correct class s_j-1
+    soft_max_gradients = exps - correct_classes_mask
+    dW = X.T.dot(soft_max_gradients) / num_X + reg * W
     #############################################################################
     #                          END OF YOUR CODE                                 #
     #############################################################################
