@@ -79,11 +79,9 @@ def time_elapse(function, *args):
     return toc - tic
 
 
-def load_data(dir, num_training=49000, num_validation=1000, num_test=1000, num_dev=500, row=False, bias=False, mean=True):
+def load_data(dir, num_training=49000, num_validation=1000, num_test=1000, num_dev=500, bias=False, row=False):
     """
     Load cifar data and preprocess data
-    Inputs:
-        dir: folder
     """
     # load data
     X_train, y_train, X_test, y_test = load_all_cifar(dir)
@@ -103,13 +101,21 @@ def load_data(dir, num_training=49000, num_validation=1000, num_test=1000, num_d
     mask = range(num_test)
     X_test = X_test[mask]
     y_test = y_test[mask]
+    """
+    preprocess data
+    """
     # Mean substraction
-    if mean:
-        mean_image = np.mean(X_train, axis=0)
-        X_train -= mean_image
-        X_val -= mean_image
-        X_test -= mean_image
-        X_dev -= mean_image
+    mean_image = np.mean(X_train, axis=0)
+    X_train -= mean_image
+    X_val -= mean_image
+    X_test -= mean_image
+    X_dev -= mean_image
+    """
+    # visualize the mean image
+    """
+    # plt.figure(figsize=(4, 4))
+    # plt.imshow(mean_image.reshape((32, 32, 3)).astype('uint8'))
+    # plt.show()
     # reshape the image data into rows
     if row:
         X_train = np.reshape(X_train, (X_train.shape[0], -1))
@@ -122,20 +128,12 @@ def load_data(dir, num_training=49000, num_validation=1000, num_test=1000, num_d
             X_val = np.hstack([X_val, np.ones((X_val.shape[0], 1))])
             X_test = np.hstack([X_test, np.ones((X_test.shape[0], 1))])
             X_dev = np.hstack([X_dev, np.ones((X_dev.shape[0], 1))])
-    # Retain the input shape and change the channel to the first
-    X_train = X_train.transpose(0, 3, 1, 2).copy()
-    X_val = X_val.transpose(0, 3, 1, 2).copy()
-    X_test = X_test.transpose(0, 3, 1, 2).copy()
-    X_dev = X_dev.transpose(0, 3, 1, 2).copy()
-
-    """
-    # visualize the mean image
-    """
-    # plt.figure(figsize=(4, 4))
-    # plt.imshow(mean_image.reshape((32, 32, 3)).astype('uint8'))
-    # plt.show()
-    # compute stand deviation
-    #sigma_image = np.std(X_train, axis=0)
+    else:
+        # Retain the input shape and change the channel to the first
+        X_train = X_train.transpose(0, 3, 1, 2).copy()
+        X_val = X_val.transpose(0, 3, 1, 2).copy()
+        X_test = X_test.transpose(0, 3, 1, 2).copy()
+        X_dev = X_dev.transpose(0, 3, 1, 2).copy()
 
     print('Train data shape: ', X_train.shape)
     print('Train labels shape: ', y_train.shape)

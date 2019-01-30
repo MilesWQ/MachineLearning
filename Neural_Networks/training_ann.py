@@ -6,13 +6,13 @@ X_train, y_train, X_val, y_val, X_test, y_test, X_dev, y_dev = load_data(
     cifar_dir, num_test=500)
 
 input_size = 32 * 32*3
-hidden_size = 200
+hidden_size = 230
 num_classes = 10
 num_iters = 3200
 best_val = -1
 best_nn = None
 learning_rates = [1e-3]
-regularization_strengths = [5e-6]
+regularization_strengths = [7e-6]
 learning_history = {}
 for lr in learning_rates:
     for reg in regularization_strengths:
